@@ -48,11 +48,10 @@ function signin(req, res, next) {
         return next(boom.unauthorized('Invalid username or password'));
       }
       return res.json({
-        token: jwt.sign(user.id, process.env.SECRET_KEY),
+        token: jwt.sign(user, process.env.SECRET_KEY, {expiresIn: '1d'}),
         username: username,
         message: "You have successfully logged in"
-      })
-
+      });
     });
   });
 }
