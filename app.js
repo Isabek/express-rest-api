@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var morgan = require("morgan")('combined');
 var mongoose = require("mongoose");
+require("dotenv").config();
 
 var crossDomain = require("./libs/cross-domain");
 var errorHandler = require("./libs/error-handler");

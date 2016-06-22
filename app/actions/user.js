@@ -1,6 +1,8 @@
 var _ = require("lodash");
 var error = require("throw.js");
+var jwt = require("jsonwebtoken");
 var User = require("../models/user").User;
+
 
 function signup(req, res, next) {
   var username = req.body.username;
@@ -28,4 +30,32 @@ function signup(req, res, next) {
   });
 }
 
+function signin(req, res, next) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  if (_.isEmpty(username) || _.isEmpty(password)) {
+    return next(new error.unauthorized("Invalid username or password"));
+  }
+
+  User.findOne({username: username}, function (err, user) {
+    if (err || _.isEmpty(user)) {
+      return next(new error.unauthorized('Invalid username or password'));
+    }
+
+    user.comparePassword(password, function (isMatch) {
+      if (!isMatch) {
+        return next(new error.unauthorized('Invalid username or password'));
+      }
+      return res.json({
+        token: jwt.sign(user.id, process.env.SECRET_KEY),
+        username: username,
+        message: "You have successfully logged in"
+      })
+
+    });
+  });
+}
+
 exports.signup = signup;
+exports.signin = signin;
