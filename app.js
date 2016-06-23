@@ -23,7 +23,7 @@ app.use('/api/car/', car);
 
 app.use(errorHandler);
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/qs_test_db');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/qs_test_db');
 mongoose.connection.on('error', function (err) {
   console.error("Connection error: ", err.message);
 });
