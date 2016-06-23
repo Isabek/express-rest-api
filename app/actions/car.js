@@ -40,6 +40,10 @@ function edit(req, res, next) {
       return next(boom.notFound("Car not found"));
     }
 
+    if (!_.isEqual(_.toString(req.user._id), _.toString(car.user))) {
+      return next(boom.forbidden("You don\'t have permission to remove this car"));
+    }
+
     return res.json({
       message: "Car has been successfully updated"
     });
