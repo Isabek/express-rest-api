@@ -1,0 +1,26 @@
+var _ = require("lodash");
+var boom = require("boom");
+var Car = require("../models/car").Car;
+
+function create(req, res, next) {
+  var name = req.body.name;
+  var type = req.body.type;
+  var mark = req.body.mark;
+  var price = req.body.price;
+
+  if (_.isEmpty(name) || _.isEmpty(type) || _.isEmpty(mark)) {
+    return next(boom.badRequest("Fill all required fields"));
+  }
+  
+  Car({name: name, type: type, mark: mark, price: price, user: req.user._id}).save(function (err, car) {
+    if (err || _.isEmpty(car)) {
+      return next(boom.internal('Please, try again later'));
+    }
+
+    return res.json({
+      message: "Car has been successfully added"
+    });
+  });
+}
+
+exports.create = create;

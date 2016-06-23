@@ -4,6 +4,7 @@ var bcrypt = require("bcrypt");
 var UserSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
   password: {type: String, required: true},
+  cars: [{type: mongoose.Schema.ObjectId, ref: "Cars"}],
   created: {type: Date, default: Date.now}
 });
 
