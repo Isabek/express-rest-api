@@ -47,5 +47,20 @@ function edit(req, res, next) {
   });
 }
 
+function read(req, res, next) {
+  var carId = req.params.id;
+
+  Car.findOne({_id: carId}, function (err, car) {
+    if (err || _.isEmpty(car)) {
+      return next(boom.notFound("Car not found"));
+    }
+
+    return res.json({
+      data: car
+    });
+  });
+}
+
 exports.create = create;
 exports.edit = edit;
+exports.read = read;
