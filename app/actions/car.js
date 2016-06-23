@@ -61,6 +61,30 @@ function read(req, res, next) {
   });
 }
 
+function remove(req, res, next) {
+  var carId = req.params.id;
+
+  Car.findOne({_id: carId}, function (err, car) {
+    if (err || _.isEmpty(car)) {
+      return next(boom.notFound("Car not found"));
+    }
+
+    if (!_.isEqual(_.toString(req.user._id), _.toString(car.user))) {
+      return next(boom.forbidden("You don\'t have permission to remove this car"));
+    }
+
+    car.remove(function (err) {
+      if (err) {
+        return next(boom.internal('Please, try again later'));
+      }
+      return res.json({
+        message: "Car has been successfully removed"
+      });
+    });
+  });
+}
+
 exports.create = create;
 exports.edit = edit;
 exports.read = read;
+exports.remove = remove;
