@@ -41,7 +41,7 @@ function edit(req, res, next) {
     }
 
     if (!_.isEqual(_.toString(req.user._id), _.toString(car.user))) {
-      return next(boom.forbidden("You don\'t have permission to remove this car"));
+      return next(boom.forbidden("You don\'t have permission to edit this car"));
     }
 
     return res.json({
