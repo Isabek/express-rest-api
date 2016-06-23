@@ -88,7 +88,25 @@ function remove(req, res, next) {
   });
 }
 
+function all(req, res, next) {
+  var sort = req.query.sort;
+  var limit = req.query.limit || 15;
+  var offset = req.query.offset || 0;
+  var search = req.query.search || '';
+
+  Car.find().skip(offset).limit(limit).exec(function (err, cars) {
+    if (err) {
+      return next(boom.internal('Something happened. Please, try again later'));
+    }
+    return res.json({
+      data: cars
+    });
+  });
+
+}
+
 exports.create = create;
 exports.edit = edit;
 exports.read = read;
 exports.remove = remove;
+exports.all = all;
