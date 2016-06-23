@@ -13,6 +13,7 @@
     "bcrypt": "^0.8.7",
     "body-parser": "^1.15.1",
     "boom": "^2.10.1",
+    "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "express-jwt": "^3.4.0",
     "jsonwebtoken": "^7.0.1",
