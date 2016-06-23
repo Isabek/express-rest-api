@@ -11,7 +11,7 @@ function create(req, res, next) {
   if (_.isEmpty(name) || _.isEmpty(type) || _.isEmpty(mark)) {
     return next(boom.badRequest("Fill all required fields"));
   }
-  
+
   Car({name: name, type: type, mark: mark, price: price, user: req.user._id}).save(function (err, car) {
     if (err || _.isEmpty(car)) {
       return next(boom.internal('Please, try again later'));
@@ -23,4 +23,29 @@ function create(req, res, next) {
   });
 }
 
+function edit(req, res, next) {
+
+  var carId = req.params.id;
+  var name = req.body.name;
+  var type = req.body.type;
+  var mark = req.body.mark;
+  var price = req.body.price;
+
+  if (_.isEmpty(carId) || _.isEmpty(name) || _.isEmpty(type) || _.isEmpty(mark)) {
+    return next(boom.badRequest("Fill all required fields"));
+  }
+
+  Car.findByIdAndUpdate(carId, {name: name, type: type, mark: mark, price: price}, function (err, car) {
+    if (err || _.isEmpty(car)) {
+      return next(boom.notFound("Car not found"));
+    }
+
+    return res.json({
+      message: "Car has been successfully updated"
+    });
+
+  });
+}
+
 exports.create = create;
+exports.edit = edit;
