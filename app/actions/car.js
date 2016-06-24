@@ -96,12 +96,20 @@ function all(req, res, next) {
   var limit = 10;
   var offset = limit * (page - 1);
 
-  Car.count({}, function (err, total) {
+  var query = {};
+  if (search) query = {
+    name: {
+      "$regex": search,
+      "$options": "i"
+    }
+  };
+
+  Car.count(query, function (err, total) {
     if (err) {
       return next(boom.internal('Something happened. Please, try again later'));
     }
 
-    Car.find().skip(offset).limit(limit).exec(function (err, cars) {
+    Car.find(query).skip(offset).limit(limit).exec(function (err, cars) {
       if (err) {
         return next(boom.internal('Something happened. Please, try again later'));
       }
