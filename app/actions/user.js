@@ -50,6 +50,7 @@ function signin(req, res, next) {
       return res.json({
         token: jwt.sign(user.toJSON(), process.env.SECRET_KEY, {expiresIn: '1d'}),
         username: username,
+        userId: user._id,
         message: "You have successfully logged in"
       });
     });
