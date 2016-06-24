@@ -106,8 +106,6 @@ function all(req, res, next) {
     }
   };
 
-  var sortCriteria = {};
-  if (sortBy && sortOrder) sortCriteria[sortBy] = sortOrder;
 
   if (sortBy && ['name', 'type', 'mark', 'price'].indexOf(sortBy) === -1) {
     return next(boom.badRequest('This sort by parameter does not supported'));
@@ -117,7 +115,9 @@ function all(req, res, next) {
     return next(boom.badRequest('This sort order parameter does not supported'));
   }
 
+  var sortCriteria = {};
   if (sortOrder == 'dsc') sortOrder = 'desc';
+  if (sortBy && sortOrder) sortCriteria[sortBy] = sortOrder;
 
   Car.count(query, function (err, total) {
     if (err) {
