@@ -113,9 +113,11 @@ function all(req, res, next) {
     return next(boom.badRequest('This sort by parameter does not supported'));
   }
 
-  if (sortOrder && ['asc', 'desc'].indexOf(sortOrder) === -1) {
+  if (sortOrder && ['asc', 'dsc', 'desc'].indexOf(sortOrder) === -1) {
     return next(boom.badRequest('This sort order parameter does not supported'));
   }
+
+  if (sortOrder == 'dsc') sortOrder = 'desc';
 
   Car.count(query, function (err, total) {
     if (err) {
