@@ -89,33 +89,49 @@ function remove(req, res, next) {
 }
 
 function all(req, res, next) {
-  var sort = req.query.sort;
-  var page = req.query.page || 1;
-  var search = req.query.search || '';
 
-  var limit = 10;
+  var sortBy = req.query['sort-by'];
+  var sortOrder = req.query['sort-order'];
+  var page = req.query.page || 1;
+  var limit = req.query.count || 10;
+  var name = req.query.name || '';
+
   var offset = limit * (page - 1);
 
   var query = {};
-  if (search) query = {
+  if (name) query = {
     name: {
-      "$regex": search,
+      "$regex": name,
       "$options": "i"
     }
   };
+
+  var sortCriteria = {};
+  if (sortBy && sortOrder) sortCriteria[sortBy] = sortOrder;
+
+  if (sortBy && ['name', 'type', 'mark', 'price'].indexOf(sortBy) === -1) {
+    return next(boom.badRequest('This sort by parameter does not supported'));
+  }
+
+  if (sortOrder && ['asc', 'desc'].indexOf(sortOrder) === -1) {
+    return next(boom.badRequest('This sort order parameter does not supported'));
+  }
 
   Car.count(query, function (err, total) {
     if (err) {
       return next(boom.internal('Something happened. Please, try again later'));
     }
 
-    Car.find(query).skip(offset).limit(limit).exec(function (err, cars) {
+    Car.find(query).sort(sortCriteria).skip(offset).limit(limit).exec(function (err, cars) {
       if (err) {
         return next(boom.internal('Something happened. Please, try again later'));
       }
       return res.json({
-        data: cars,
-        total: total
+        cars: cars,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        total: total,
+        limit: limit
       });
     });
 
