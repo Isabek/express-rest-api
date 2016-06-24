@@ -90,19 +90,28 @@ function remove(req, res, next) {
 
 function all(req, res, next) {
   var sort = req.query.sort;
-  var limit = req.query.limit || 15;
-  var offset = req.query.offset || 0;
+  var page = req.query.page || 1;
   var search = req.query.search || '';
 
-  Car.find().skip(offset).limit(limit).exec(function (err, cars) {
+  var limit = 2;
+  var offset = limit * (page - 1);
+
+  Car.count({}, function (err, total) {
     if (err) {
       return next(boom.internal('Something happened. Please, try again later'));
     }
-    return res.json({
-      data: cars
-    });
-  });
 
+    Car.find().skip(offset).limit(limit).exec(function (err, cars) {
+      if (err) {
+        return next(boom.internal('Something happened. Please, try again later'));
+      }
+      return res.json({
+        data: cars,
+        total: total
+      });
+    });
+
+  });
 }
 
 exports.create = create;
