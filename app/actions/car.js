@@ -93,7 +93,7 @@ function all(req, res, next) {
   var page = req.query.page || 1;
   var search = req.query.search || '';
 
-  var limit = 2;
+  var limit = 10;
   var offset = limit * (page - 1);
 
   Car.count({}, function (err, total) {
